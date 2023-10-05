@@ -121,12 +121,13 @@ class Passaro(Ator):
 
         :param tempo: tempo de jogo a ser calculada a posição
         :return: posição x, y
-        Fórmula Y=Y0+v\*sen(teta)delta_t-(G\*delta_t^2)/2.
+        Fórmula X=X0+v\*cos(teta)\*delta_t.
         """
         delta_t = tempo - self._tempo_de_lancamento
         self.y = self._y_inicial + self.velocidade_escalar*math.sin(self._angulo_de_lancamento)*delta_t
         self.y -= (GRAVIDADE * (delta_t ** 2)) / 2
-        return 1, self.y
+        self.x = self._x_inicial + self.velocidade_escalar*math.cos(self._angulo_de_lancamento)*delta_t
+        return self.x, self.y
 
     def lancar(self, angulo, tempo_de_lancamento):
         """
