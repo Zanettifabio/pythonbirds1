@@ -122,14 +122,10 @@ class Passaro(Ator):
         :param tempo: tempo de jogo a ser calculada a posição
         :return: posição x, y
         """
-        if self.status == ATIVO and self.foi_lancado():
+        if self._esta_voando():
             delta_t = tempo - self._tempo_de_lancamento
-            y_atual = self._y_inicial + self.velocidade_escalar*math.sin(self._angulo_de_lancamento)*delta_t
-            y_atual -= (GRAVIDADE * (delta_t ** 2)) / 2
-            x_atual = self._x_inicial + self.velocidade_escalar*math.cos(self._angulo_de_lancamento)*delta_t
-            self.y = y_atual
-            self.x = x_atual
-            return self.x, self.y
+            self.y = self._calcular_posicao_vertical(delta_t)
+            self.x = self._calcular_posicao_horizontal(delta_t)
         return super().calcular_posicao(tempo)
 
     def lancar(self, angulo, tempo_de_lancamento):
@@ -143,6 +139,20 @@ class Passaro(Ator):
         """
         self._angulo_de_lancamento = math.radians(angulo)
         self._tempo_de_lancamento = tempo_de_lancamento
+
+    def _calcular_posicao_vertical(self, delta_t):
+        y_atual = self._y_inicial
+        y_atual += self.velocidade_escalar * math.sin(self._angulo_de_lancamento) * delta_t
+        y_atual -= (GRAVIDADE * (delta_t ** 2)) / 2
+        return y_atual
+
+    def _calcular_posicao_horizontal(self, delta_t):
+        x_atual = self._x_inicial
+        x_atual += self.velocidade_escalar * math.cos(self._angulo_de_lancamento) * delta_t
+        return x_atual
+
+    def _esta_voando(self):
+        return self.status == ATIVO and self.foi_lancado()
 
 
 class PassaroAmarelo(Passaro):
